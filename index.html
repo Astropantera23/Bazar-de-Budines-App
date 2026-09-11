@@ -30,7 +30,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--wine);outline-o
 button:active{transform:scale(0.96);}
 .app{max-width:480px;margin:0 auto;min-height:100vh;position:relative;}
 .screen{padding-bottom:110px;}
-.hero{background:var(--crust);color:#FBF3E4;padding:20px 20px 16px;border-radius:0 0 20px 20px;}
+.hero{background:var(--wine);color:#FBF3E4;padding:20px 20px 16px;border-radius:0 0 20px 20px;}
 .hero-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
 .brand{font-family:'Roboto Slab',serif;font-weight:700;font-size:24px;margin:0;}
 .tagline{font-size:13px;margin:4px 0 0;opacity:0.9;}
@@ -38,6 +38,7 @@ button:active{transform:scale(0.96);}
 .icon-btn{position:relative;background:rgba(255,255,255,0.16);width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#FBF3E4;flex-shrink:0;}
 .icon-btn svg{width:20px;height:20px;}
 .badge{position:absolute;top:-4px;right:-4px;background:var(--wine);color:#fff;font-size:11px;font-weight:600;min-width:18px;height:18px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 4px;}
+.badge[hidden]{display:none;}
 .chips{display:flex;gap:8px;overflow-x:auto;padding:16px 20px 10px;scrollbar-width:none;}
 .chips::-webkit-scrollbar{display:none;}
 .chip{flex-shrink:0;padding:7px 16px;border-radius:999px;border:1px solid var(--border);background:var(--card);font-size:13px;font-weight:500;}
@@ -45,7 +46,7 @@ button:active{transform:scale(0.96);}
 .products{display:flex;flex-direction:column;gap:14px;padding:4px 20px 16px;}
 .product-card{position:relative;background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;}
 .product-image-wrap{position:relative;}
-.product-image-wrap svg{display:block;width:100%;height:120px;}
+.product-image-wrap img{display:block;width:100%;height:120px;object-fit:cover;background:var(--border);}
 .badge-tag{position:absolute;top:10px;left:10px;font-size:11px;font-weight:600;padding:3px 10px;border-radius:999px;}
 .badge-tag.success{background:var(--success-bg);color:var(--success-ink);}
 .badge-tag.accent{background:var(--wine-tint);color:var(--wine);}
@@ -63,7 +64,8 @@ button:active{transform:scale(0.96);}
 .qty-btn{width:26px;height:26px;border-radius:50%;border:1px solid var(--border);background:var(--card);display:flex;align-items:center;justify-content:center;}
 .qty-btn svg{width:13px;height:13px;}
 .qty-val{font-size:14px;font-weight:600;min-width:14px;text-align:center;}
-.cart-bar{position:fixed;bottom:76px;left:50%;transform:translateX(-50%);width:calc(100% - 32px);max-width:448px;background:var(--wine);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-radius:14px;z-index:19;}
+.cart-bar{position:fixed;bottom:76px;left:50%;transform:translateX(-50%);width:calc(100% - 32px);max-width:448px;background:var(--crust);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-radius:14px;z-index:19;}
+.cart-bar[hidden]{display:none;}
 .cart-bar-count{font-size:12px;margin:0;opacity:0.85;}
 .cart-bar-total{font-size:16px;font-weight:600;margin:1px 0 0;}
 .cart-bar button{background:#fff;color:var(--wine);padding:9px 16px;border-radius:9px;font-size:13px;font-weight:600;}
@@ -185,50 +187,14 @@ const ICONS = {
   cookie:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><circle cx="9" cy="10" r="0.9" fill="currentColor" stroke="none"/><circle cx="14" cy="9" r="0.9" fill="currentColor" stroke="none"/><circle cx="13" cy="14" r="0.9" fill="currentColor" stroke="none"/></svg>'
 };
 
-function sliceImage(id, bg, cake, glaze, extra){
-  extra = extra || '';
-  return '<svg viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg">' +
-    '<rect width="320" height="160" fill="' + bg + '"/>' +
-    '<ellipse cx="160" cy="134" rx="88" ry="9" fill="rgba(0,0,0,0.07)"/>' +
-    '<defs><clipPath id="clip' + id + '"><rect x="68" y="44" width="184" height="86" rx="20"/></clipPath></defs>' +
-    '<g clip-path="url(#clip' + id + ')">' +
-      '<rect x="68" y="44" width="184" height="26" fill="' + glaze + '"/>' +
-      '<rect x="68" y="70" width="184" height="60" fill="' + cake + '"/>' +
-      extra +
-    '</g>' +
-  '</svg>';
-}
-
-function miniImage(){
-  const colors = ['#F2D879', '#F0A857', '#4A2A1D', '#D9B577'];
-  const xs = [34, 104, 174, 244];
-  let rects = '';
-  for(let i = 0; i < 4; i++){
-    rects += '<rect x="' + xs[i] + '" y="52" width="55" height="66" rx="16" fill="' + colors[i] + '"/>';
-    rects += '<ellipse cx="' + (xs[i] + 27) + '" cy="58" rx="24" ry="8" fill="rgba(255,255,255,0.35)"/>';
-  }
-  return '<svg viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg">' +
-    '<rect width="320" height="160" fill="#F2ECDD"/>' +
-    '<ellipse cx="160" cy="130" rx="120" ry="9" fill="rgba(0,0,0,0.06)"/>' +
-    rects +
-  '</svg>';
-}
-
 const PRODUCTS = [
-  {id:1, name:'Budín de limón', desc:'Con glaseado y ralladura de limón', price:3200, cat:'clasicos', icon:'bread',
-    image: sliceImage(1, '#FBF3D8', '#F2D879', '#FFF8E4', '<circle cx="105" cy="100" r="3" fill="#C9D66B"/><circle cx="150" cy="112" r="2.5" fill="#C9D66B"/><circle cx="195" cy="98" r="3" fill="#C9D66B"/><circle cx="220" cy="115" r="2.5" fill="#C9D66B"/>')},
-  {id:2, name:'Budín marmolado', desc:'Vainilla y chocolate combinados', price:3400, cat:'clasicos', icon:'bread',
-    image: sliceImage(2, '#F1E7DB', '#EFE1C9', '#F8F1E1', '<path d="M85 92 Q160 80 235 100" stroke="#6B4226" stroke-width="6" fill="none" stroke-linecap="round"/><path d="M88 114 Q160 102 232 120" stroke="#6B4226" stroke-width="5" fill="none" stroke-linecap="round"/>')},
-  {id:3, name:'Budín de naranja y amapola', desc:'Cítrico, con semillas de amapola', price:3600, cat:'clasicos', icon:'bread',
-    image: sliceImage(3, '#FBE7D2', '#F0A857', '#FFF3E2', '<circle cx="100" cy="92" r="1.6" fill="#2B2118"/><circle cx="118" cy="105" r="1.6" fill="#2B2118"/><circle cx="140" cy="94" r="1.6" fill="#2B2118"/><circle cx="165" cy="110" r="1.6" fill="#2B2118"/><circle cx="188" cy="96" r="1.6" fill="#2B2118"/><circle cx="205" cy="112" r="1.6" fill="#2B2118"/><circle cx="222" cy="98" r="1.6" fill="#2B2118"/>')},
-  {id:4, name:'Budín de chocolate', desc:'Relleno de dulce de leche', price:4200, cat:'rellenos', icon:'cake',
-    image: sliceImage(4, '#EFE0D2', '#4A2A1D', '#6B3B22', '<rect x="100" y="68" width="10" height="16" rx="5" fill="#6B3B22"/><rect x="150" y="68" width="10" height="20" rx="5" fill="#6B3B22"/><rect x="200" y="68" width="10" height="14" rx="5" fill="#6B3B22"/><path d="M85 58 Q120 66 155 58 T225 58" stroke="#C68A3D" stroke-width="3" fill="none" stroke-linecap="round"/>')},
-  {id:5, name:'Budín de nuez y pasas', desc:'Con nueces y pasas de uva', price:3900, cat:'rellenos', icon:'cake',
-    image: sliceImage(5, '#F1E6D3', '#D9B577', '#F8EFDD', '<ellipse cx="110" cy="98" rx="4" ry="2.5" fill="#3B2A1E"/><ellipse cx="150" cy="112" rx="4" ry="2.5" fill="#3B2A1E"/><ellipse cx="195" cy="100" rx="4" ry="2.5" fill="#3B2A1E"/><circle cx="130" cy="90" r="4" fill="#8B5E3C"/><circle cx="215" cy="114" r="4" fill="#8B5E3C"/>')},
-  {id:6, name:'Budín de zanahoria', desc:'Glaseado de queso crema', price:4500, cat:'sintacc', icon:'leaf', badge:'Sin TACC', badgeType:'success',
-    image: sliceImage(6, '#FBE9D6', '#E8A34E', '#FBF6EC', '<line x1="105" y1="95" x2="112" y2="88" stroke="#7A9B4E" stroke-width="3" stroke-linecap="round"/><line x1="150" y1="108" x2="157" y2="100" stroke="#7A9B4E" stroke-width="3" stroke-linecap="round"/><line x1="190" y1="94" x2="197" y2="86" stroke="#7A9B4E" stroke-width="3" stroke-linecap="round"/><line x1="215" y1="110" x2="222" y2="102" stroke="#7A9B4E" stroke-width="3" stroke-linecap="round"/>')},
-  {id:7, name:'Mini budines surtidos x4', desc:'Combo de 4 sabores variados', price:5800, cat:'individual', icon:'cookie', badge:'Más pedido', badgeType:'accent',
-    image: miniImage()}
+  {id:1, name:'Budín de limón', desc:'Con glaseado y ralladura de limón', price:3200, cat:'clasicos', icon:'bread', image:'images/limon.png'},
+  {id:2, name:'Budín marmolado', desc:'Vainilla y chocolate combinados', price:3400, cat:'clasicos', icon:'bread', image:'images/marmolado.png'},
+  {id:3, name:'Budín de naranja y amapola', desc:'Cítrico, con semillas de amapola', price:3600, cat:'clasicos', icon:'bread', image:'images/naranja-amapola.png'},
+  {id:4, name:'Budín de chocolate', desc:'Relleno de dulce de leche', price:4200, cat:'rellenos', icon:'cake', image:'images/chocolate.png'},
+  {id:5, name:'Budín de nuez y pasas', desc:'Con nueces y pasas de uva', price:3900, cat:'rellenos', icon:'cake', image:'images/nuez-pasas.png'},
+  {id:6, name:'Budín de zanahoria', desc:'Glaseado de queso crema', price:4500, cat:'sintacc', icon:'leaf', badge:'Sin TACC', badgeType:'success', image:'images/zanahoria.png'},
+  {id:7, name:'Mini budines surtidos x4', desc:'Combo de 4 sabores variados', price:5800, cat:'individual', icon:'cookie', badge:'Más pedido', badgeType:'accent', image:'images/mini-surtidos.png'}
 ];
 
 const CATS = [
@@ -277,7 +243,7 @@ function cardHTML(p){
   const badge = p.badge ? '<span class="badge-tag ' + p.badgeType + '">' + p.badge + '</span>' : '';
   return '<div class="product-card" data-id="' + p.id + '">' +
     '<div class="product-image-wrap">' +
-      p.image +
+      '<img src="' + p.image + '" alt="' + p.name + '" loading="lazy">' +
       badge +
       '<button class="fav-btn ' + (isFav ? 'is-fav' : '') + '" onclick="toggleFav(' + p.id + ')" aria-label="Favorito">' + (isFav ? ICONS.heartFill : ICONS.heart) + '</button>' +
     '</div>' +
