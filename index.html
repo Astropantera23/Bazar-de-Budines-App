@@ -94,6 +94,10 @@ button:active{transform:scale(0.96);}
 .avatar{width:52px;height:52px;border-radius:50%;background:var(--wine);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Roboto Slab',serif;font-size:20px;font-weight:700;flex-shrink:0;}
 .profile-name{font-size:16px;font-weight:600;margin:0;}
 .profile-sub{font-size:13px;color:var(--ink-soft);margin:3px 0 0;}
+.profile-edit{padding:18px 20px 10px;}
+.profile-edit-label{font-size:12.5px;color:var(--ink-soft);margin:0 0 6px;display:block;}
+.profile-edit input{width:100%;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 14px;font-size:15px;color:var(--ink);margin-bottom:10px;font-family:'Work Sans',sans-serif;}
+.profile-edit input:focus-visible{outline:2px solid var(--wine);outline-offset:2px;}
 .confirm-view{text-align:center;padding:50px 30px;}
 .confirm-icon{width:56px;height:56px;border-radius:50%;background:var(--success-bg);color:var(--success-ink);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;}
 .confirm-icon svg{width:28px;height:28px;}
@@ -144,11 +148,16 @@ button:active{transform:scale(0.96);}
   <section id="screen-perfil" class="screen" hidden>
     <header class="subheader"><p class="subheader-title">Perfil</p></header>
     <div class="profile-card">
-      <div class="avatar">N</div>
+      <div class="avatar" id="profile-avatar">?</div>
       <div>
-        <p class="profile-name">Hola, Nacho</p>
-        <p class="profile-sub">Los Polvorines, GBA norte</p>
+        <p class="profile-name" id="profile-greeting">Hola</p>
+        <p class="profile-sub">Cliente de Bazar de Budines</p>
       </div>
+    </div>
+    <div class="profile-edit">
+      <label class="profile-edit-label" for="profile-name-input">Tu nombre</label>
+      <input id="profile-name-input" type="text" maxlength="20" placeholder="Escribí tu nombre" onkeydown="if(event.key==='Enter'){saveProfileName(); this.blur();}">
+      <button class="btn-primary" onclick="saveProfileName()">Guardar</button>
     </div>
   </section>
 
@@ -222,6 +231,37 @@ const el = {
 };
 
 function money(n){ return '$' + n.toLocaleString('es-AR'); }
+
+const PROFILE_KEY = 'bazarBudinesUserName';
+
+function getUserName(){
+  try { return localStorage.getItem(PROFILE_KEY) || ''; } catch(e){ return ''; }
+}
+
+function renderProfile(){
+  const name = getUserName();
+  const greeting = document.getElementById('profile-greeting');
+  const avatar = document.getElementById('profile-avatar');
+  const input = document.getElementById('profile-name-input');
+  if(name){
+    greeting.textContent = 'Hola, ' + name;
+    avatar.textContent = name.charAt(0).toUpperCase();
+  } else {
+    greeting.textContent = '¡Hola!';
+    avatar.textContent = '?';
+  }
+  input.value = name;
+}
+
+function saveProfileName(){
+  const input = document.getElementById('profile-name-input');
+  const value = input.value.trim();
+  try {
+    if(value) localStorage.setItem(PROFILE_KEY, value);
+    else localStorage.removeItem(PROFILE_KEY);
+  } catch(e){}
+  renderProfile();
+}
 
 function mountIcons(){
   document.querySelectorAll('[data-icon]').forEach(function(span){
@@ -304,6 +344,7 @@ function goTo(name){
   if(name === 'carrito') renderCartScreen();
   if(name === 'pedidos') renderOrders();
   if(name === 'favoritos') renderFavorites();
+  if(name === 'perfil') renderProfile();
 }
 
 function renderCartScreen(){
